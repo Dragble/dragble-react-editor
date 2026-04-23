@@ -93,7 +93,7 @@
   },
   "homepage": "https://docs.dragble.com",
   "dependencies": {
-    "dragble-types": "file:../dragble-editor-types"
+    "dragble-types": "latest"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
