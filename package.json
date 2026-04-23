@@ -1,0 +1,136 @@
+{
+  "name": "dragble-react-editor",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "React email editor component AI powered drag-and-drop email builder for creating responsive email templates and newsletters. Build HTML emails visually with Dragble.",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "build:watch": "rollup -c -w",
+    "dev": "rollup -c -w",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run build",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "dragble",
+    "email",
+    "email-editor",
+    "email-builder",
+    "email-template",
+    "email-template-builder",
+    "email-template-editor",
+    "email-designer",
+    "email-design",
+    "html-email",
+    "html-email-editor",
+    "html-email-builder",
+    "responsive-email",
+    "newsletter",
+    "newsletter-builder",
+    "newsletter-editor",
+    "newsletter-template",
+    "react",
+    "react-email",
+    "react-email-editor",
+    "react-email-builder",
+    "react-component",
+    "editor",
+    "template-editor",
+    "template-builder",
+    "drag-and-drop",
+    "drag-drop-editor",
+    "visual-editor",
+    "wysiwyg",
+    "wysiwyg-editor",
+    "page-builder",
+    "web-page-builder",
+    "landing-page-builder",
+    "no-code",
+    "low-code",
+    "design-tool",
+    "email-marketing",
+    "email-campaign",
+    "transactional-email",
+    "mailchimp",
+    "sendgrid",
+    "mjml",
+    "embed",
+    "embeddable",
+    "iframe",
+    "sdk",
+    "content-builder",
+    "email-automation"
+  ],
+  "author": "Dragble",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Dragble/dragble-react-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dragble/dragble-react-editor/issues"
+  },
+  "homepage": "https://docs.dragble.com",
+  "dependencies": {
+    "dragble-types": "file:../dragble-editor-types"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/node": "^20.10.4",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "husky": "^9.1.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.9.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "tslib": "^2.8.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
