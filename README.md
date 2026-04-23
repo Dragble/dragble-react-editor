@@ -13,7 +13,7 @@
 
 React component for building **email templates** with drag-and-drop. Embed a full-featured **email editor** into your React app — create responsive HTML emails, newsletters, transactional email templates, and email marketing campaigns visually without writing code.
 
-[Dragble](https://dragble.com) is a modern **email builder** and **email template editor** that lets your users design professional emails with a visual drag-and-drop interface.
+[Dragble](https://dragble.com) is a modern AI-powered **email builder** and **email template editor** that lets your users design professional emails with a visual drag-and-drop interface.
 
 [Website](https://dragble.com) | [Documentation](https://docs.dragble.com) | [Dashboard](https://developers.dragble.com)
 
@@ -53,7 +53,11 @@ An `editorKey` is required to use the editor. You can get one by creating a proj
 
 ```tsx
 import { useRef } from "react";
-import { DragbleEditor, DragbleEditorRef, DesignJson } from "dragble-react-editor";
+import {
+  DragbleEditor,
+  DragbleEditorRef,
+  DesignJson,
+} from "dragble-react-editor";
 
 function EmailBuilder() {
   const editorRef = useRef<DragbleEditorRef>(null);
@@ -201,28 +205,28 @@ export default AdvancedEmailBuilder;
 
 ## Props
 
-| Prop            | Type                                                                        | Required | Default     | Description                                                |
-| --------------- | --------------------------------------------------------------------------- | -------- | ----------- | ---------------------------------------------------------- |
-| `editorKey`     | `string`                                                                    | Yes      | —           | Editor key for authentication                              |
-| `design`        | `DesignJson \| ModuleData \| null`                                          | No       | `undefined` | Initial design to load                                     |
-| `editorMode`    | `EditorMode`                                                                | No       | —           | `"email"` \| `"web"` \| `"popup"`                          |
-| `contentType`   | `"module"`                                                                  | No       | —           | Single-row module editor mode                              |
-| `options`       | `EditorOptions`                                                             | No       | `{}`        | All editor configuration                                   |
-| `popup`         | `PopupConfig`                                                               | No       | —           | Popup config (only when `editorMode` is `"popup"`)         |
-| `collaboration` | `boolean \| CollaborationFeaturesConfig`                                    | No       | —           | Collaboration features                                     |
-| `user`          | `UserInfo`                                                                  | No       | —           | User info for session/collaboration                        |
-| `designMode`    | `"edit" \| "live"`                                                          | No       | `"live"`    | Template permissions mode                                  |
-| `height`        | `string \| number`                                                          | No       | —           | Editor height                                              |
-| `minHeight`     | `string \| number`                                                          | No       | `"600px"`   | Minimum editor height                                      |
+| Prop            | Type                                                                       | Required | Default     | Description                                                |
+| --------------- | -------------------------------------------------------------------------- | -------- | ----------- | ---------------------------------------------------------- |
+| `editorKey`     | `string`                                                                   | Yes      | —           | Editor key for authentication                              |
+| `design`        | `DesignJson \| ModuleData \| null`                                         | No       | `undefined` | Initial design to load                                     |
+| `editorMode`    | `EditorMode`                                                               | No       | —           | `"email"` \| `"web"` \| `"popup"`                          |
+| `contentType`   | `"module"`                                                                 | No       | —           | Single-row module editor mode                              |
+| `options`       | `EditorOptions`                                                            | No       | `{}`        | All editor configuration                                   |
+| `popup`         | `PopupConfig`                                                              | No       | —           | Popup config (only when `editorMode` is `"popup"`)         |
+| `collaboration` | `boolean \| CollaborationFeaturesConfig`                                   | No       | —           | Collaboration features                                     |
+| `user`          | `UserInfo`                                                                 | No       | —           | User info for session/collaboration                        |
+| `designMode`    | `"edit" \| "live"`                                                         | No       | `"live"`    | Template permissions mode                                  |
+| `height`        | `string \| number`                                                         | No       | —           | Editor height                                              |
+| `minHeight`     | `string \| number`                                                         | No       | `"600px"`   | Minimum editor height                                      |
 | `callbacks`     | `Omit<DragbleCallbacks, "onReady" \| "onLoad" \| "onChange" \| "onError">` | No       | —           | SDK callbacks (excluding those handled by dedicated props) |
-| `className`     | `string`                                                                    | No       | —           | CSS class for the outer container                          |
-| `style`         | `React.CSSProperties`                                                       | No       | —           | Inline styles for the outer container                      |
+| `className`     | `string`                                                                   | No       | —           | CSS class for the outer container                          |
+| `style`         | `React.CSSProperties`                                                      | No       | —           | Inline styles for the outer container                      |
 
-| `onReady`       | `(editor: DragbleSDK) => void`                                             | No       | —           | Called when the editor is ready                            |
-| `onLoad`        | `() => void`                                                                | No       | —           | Called when a design is loaded                             |
-| `onChange`      | `(data: { design: DesignJson; type: string }) => void`                      | No       | —           | Called when the design changes                             |
-| `onError`       | `(error: Error) => void`                                                    | No       | —           | Called on error                                            |
-| `onComment`     | `(action: CommentAction) => void`                                           | No       | —           | Called on comment events                                   |
+| `onReady` | `(editor: DragbleSDK) => void` | No | — | Called when the editor is ready |
+| `onLoad` | `() => void` | No | — | Called when a design is loaded |
+| `onChange` | `(data: { design: DesignJson; type: string }) => void` | No | — | Called when the design changes |
+| `onError` | `(error: Error) => void` | No | — | Called on error |
+| `onComment` | `(action: CommentAction) => void` | No | — | Called on comment events |
 
 ## Ref
 

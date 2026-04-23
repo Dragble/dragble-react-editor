@@ -15,7 +15,7 @@ const plugins = [
 ];
 
 // External dependencies - SDK is bundled, React is external
-const external = ["react", "react-dom", "@dragble/editor-sdk"];
+const external = ["react", "react-dom", "dragble-types"];
 
 // CJS bundle
 const cjsBundle = {
