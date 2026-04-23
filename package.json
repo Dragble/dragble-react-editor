@@ -1,6 +1,6 @@
 {
   "name": "dragble-react-editor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "React email editor component AI powered drag-and-drop email builder for creating responsive email templates and newsletters. Build HTML emails visually with Dragble.",
   "main": "dist/index.js",
