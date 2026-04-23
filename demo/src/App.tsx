@@ -124,7 +124,7 @@ export default function App() {
       {/* Editor */}
       <DragbleEditor
         ref={editorRef}
-        editorKey="db_pxl81cxn92wignwx"
+        editorKey="EDITOR_KEY_HERE"
         editorMode="email"
         designMode="edit"
         height="100%"
