@@ -34,7 +34,7 @@ const cjsBundle = {
 const esmBundle = {
   input: "src/index.tsx",
   output: {
-    file: "dist/index.esm.js",
+    file: "dist/index.mjs",
     format: "esm",
     sourcemap: true,
     exports: "named",
