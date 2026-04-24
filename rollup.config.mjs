@@ -21,7 +21,7 @@ const external = ["react", "react-dom", "dragble-types"];
 const cjsBundle = {
   input: "src/index.tsx",
   output: {
-    file: "dist/index.js",
+    file: "dist/index.cjs",
     format: "cjs",
     sourcemap: true,
     exports: "named",
