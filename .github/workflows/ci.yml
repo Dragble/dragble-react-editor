@@ -39,8 +39,8 @@ jobs:
 
       - name: Verify output
         run: |
-          if [ ! -f dist/index.js ]; then
-            echo "ERROR: dist/index.js not found"
+          if [ ! -f dist/index.cjs ]; then
+            echo "ERROR: dist/index.cjs not found"
             exit 1
           fi
           echo "Build output OK"
