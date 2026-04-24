@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://dragble.com">
-    <img src="logo.png" alt="Dragble Email Editor - React Email Template Builder" width="300" />
+    <img src="logo.png" alt="Dragble - AI-Powered React Email Template Builder" width="300" />
   </a>
 </p>
 
@@ -11,14 +11,14 @@
 
 # dragble-react-editor
 
-React component for building **email templates** with drag-and-drop. Embed a full-featured **email editor** into your React app — create responsive HTML emails, newsletters, transactional email templates, and email marketing campaigns visually without writing code.
+AI-powered React component for building **email templates** with drag-and-drop. Embed a full-featured **AI-powered email editor** into your React app — create responsive HTML emails, newsletters, transactional email templates, and email marketing campaigns visually without writing code.
 
 [Dragble](https://dragble.com) is a modern AI-powered **email builder** and **email template editor** that lets your users design professional emails with a visual drag-and-drop interface.
 
 [Website](https://dragble.com) | [Documentation](https://docs.dragble.com) | [Dashboard](https://developers.dragble.com)
 
 <p align="center">
-  <img src="editor_image.png" alt="Dragble React Email Editor - Drag and Drop Email Template Builder" width="700" />
+  <img src="editor_image.png" alt="Dragble - AI-Powered React Email Editor with Drag and Drop" width="700" />
 </p>
 
 ## Features
