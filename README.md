@@ -11,9 +11,9 @@
 
 # dragble-react-editor
 
-AI-powered React component for building **email templates** with drag-and-drop. Embed a full-featured **AI-powered email editor** into your React app — create responsive HTML emails, newsletters, transactional email templates, and email marketing campaigns visually without writing code.
+The **fully AI-powered** React editor for **email templates** and **landing pages**. Your end-users design visually with drag-and-drop — or describe what they want and watch AI agents build it live on the canvas. Powered by the built-in **Model Context Protocol (MCP)** server, connect [Claude Code](https://claude.com/code), [OpenCode](https://opencode.ai), [Codex](https://github.com/openai/codex), [Cursor](https://cursor.com), or your own AI backend directly to the editor. Structured tool calls mean guaranteed-valid output — no prompt engineering, no JSON hallucination, no broken layouts.
 
-[Dragble](https://dragble.com) is a modern AI-powered **email builder** and **email template editor** that lets your users design professional emails with a visual drag-and-drop interface.
+[Dragble](https://dragble.com) brings two design experiences together in one React component: a polished visual editor for designers and a conversational AI surface for everyone else — backed by structured tool calls that produce guaranteed-valid HTML emails and landing pages every time.
 
 [Website](https://dragble.com) | [Documentation](https://docs.dragble.com) | [Dashboard](https://developers.dragble.com)
 
@@ -24,6 +24,7 @@ AI-powered React component for building **email templates** with drag-and-drop. 
 ## Features
 
 - Drag-and-drop **email template builder** with 20+ content blocks
+- **Fully AI-powered via MCP** — connect AI agents (Claude Code, OpenCode, Codex, Cursor) or your own AI backend to build designs live on the canvas. Structured tool calls mean guaranteed-valid output — no prompt engineering, no JSON hallucination
 - Responsive **HTML email** output compatible with all major email clients
 - **Newsletter editor** with merge tags, dynamic content, and display conditions
 - Visual **email designer** — no HTML/CSS knowledge required for end users
@@ -202,6 +203,170 @@ function AdvancedEmailBuilder() {
 
 export default AdvancedEmailBuilder;
 ```
+
+## MCP — AI Integration
+
+Connect AI agents (Claude Code, OpenCode, Codex, Cursor, or your own backend) to the editor through the Model Context Protocol. The AI calls structured tools — `add_row`, `add_heading`, `update_button`, `export_html` — that mutate design state live on the canvas.
+
+### Enabling MCP
+
+MCP is off by default. Set `features: { mcp: true }` to opt in:
+
+```tsx
+<DragbleEditor
+  ref={editorRef}
+  editorKey="db_pxl81cxn92wignwx"
+  options={{ features: { mcp: true } }}
+/>
+```
+
+MCP also requires a **Starter plan or higher**. Both conditions must be true — plan allows it AND SDK enables it.
+
+### Quick example — your backend controls the AI
+
+```tsx
+import { useRef } from "react";
+import { DragbleEditor, DragbleEditorRef } from "dragble-react-editor";
+
+function App() {
+  const editorRef = useRef<DragbleEditorRef>(null);
+
+  const handleConnectAI = async () => {
+    // The id is YOUR identifier — derive it from your own database/session
+    // so the same user editing the same document always gets the same MCP
+    // session. Example: if your logged-in user is "alice123" and they're
+    // editing document "campaign-summer-2026", build an id like this:
+    //
+    //   const id = "alice123-campaign-summer-2026";
+    //
+    // Format rules: 8-128 chars, only letters/digits/hyphens/underscores.
+    const userIdFromAuth = "alice123"; // from your auth/session
+    const docIdFromRoute = "campaign-summer"; // from your URL or DB row
+    const id = `${userIdFromAuth}-${docIdFromRoute}`;
+    const { sessionId } = await editorRef.current!.editor!.connectMCP({ id });
+    // Pass sessionId to your backend — it calls MCP tools with your mcp_key
+  };
+
+  return (
+    <div style={{ height: "100vh" }}>
+      <button onClick={handleConnectAI}>Connect AI</button>
+      <DragbleEditor
+        ref={editorRef}
+        editorKey="db_pxl81cxn92wignwx"
+        options={{ features: { mcp: true } }}
+      />
+    </div>
+  );
+}
+```
+
+### Quick example — end-user pairs their own AI client
+
+```tsx
+const handleLetUserPair = async () => {
+  const editor = editorRef.current!.editor!;
+  // Same id you'd use anywhere else for this user+document combination.
+  // 8-128 chars, only letters/digits/hyphens/underscores.
+  const id = "alice123-campaign-summer-2026";
+  await editor.connectMCP({ id });
+
+  // Explicitly generate a pairing code (not auto-generated)
+  const { code, expiresAt } = await editor.getPairingCode();
+  alert(`Paste this into Claude Code: ${code}`);
+};
+```
+
+### One controller per session
+
+Each session can be controlled by **either** your backend **or** an end-user's AI client (OpenCode, Claude Code), never both at the same time:
+
+- If your backend makes the first tool call → session is locked to **backend**. Pairing codes are rejected.
+- If a user pairs via pairing code first → session is locked to **paired client**. Backend tool calls are rejected.
+
+This prevents two AI controllers from conflicting on the same design.
+
+### How it works
+
+1. **Enable MCP** in the SDK config: `features: { mcp: true }`.
+2. **Generate an MCP key** in the Dragble dashboard: Project → MCP Key → Generate. Store it in your backend env vars — never in browser code.
+3. **Call `editor.connectMCP({ id })`** where `id` is a stable identifier you control (see below).
+4. **Choose your AI path**: either your backend calls MCP tools directly (using the mcp_key), or you generate a pairing code for the end-user to connect their own AI client.
+5. **Mutations stream live** onto the editor canvas as the AI works.
+
+### The `id` parameter — why it matters
+
+The `id` you pass to `connectMCP()` is a **Bring Your Own ID (BYOI)** that maps to your domain entities. It is NOT a random token — it is how Dragble identifies the session across browser refreshes, server restarts, and device switches.
+
+**Rules:**
+
+- 8–128 characters long
+- Only letters, numbers, hyphens, and underscores (`a-z A-Z 0-9 - _`)
+- Must be deterministic — the same user editing the same document should always produce the same `id`
+
+**Why these rules?**
+
+- The `id` is used in database lookups, URL paths, and R2 storage keys — special characters or extreme lengths would break routing
+- Same `id` = resume the same session. Random UUIDs mean every page refresh creates a new session and loses AI context
+- Short IDs (< 8 chars) are too easy to guess, long IDs (> 128 chars) waste storage
+
+```tsx
+// Recommended: derive from your domain — concrete examples
+editor.connectMCP({ id: "alice123-campaign-summer-2026" }); // user + doc
+editor.connectMCP({ id: "workspace_acme_template_welcome" }); // workspace + template
+editor.connectMCP({ id: "org-uber-eats-promo-q4-2026" }); // org + campaign
+editor.connectMCP({ id: "tenant_42_invoice_template_v3" }); // tenant + entity
+
+// Valid but NOT recommended — random IDs break session continuity
+// (every page refresh creates a brand new session, AI loses context)
+editor.connectMCP({ id: crypto.randomUUID() });
+```
+
+### Storage modes (compliance)
+
+Choose how much of the session lives on Dragble's servers:
+
+```tsx
+editor.connectMCP({
+  id: "user-42-doc-99",
+  storage: "full", // default — best UX, refresh + cross-device resume
+  // "metadata-only"        // audit metadata only, no design content persisted
+  // "memory-only"          // nothing persisted (HIPAA / SOC2 / data residency)
+});
+```
+
+### Disconnecting
+
+`disconnectMCP()` permanently destroys the session — Dragble removes all session data from its servers and the session cannot be reopened:
+
+```tsx
+const { destroyed } = await editor.disconnectMCP();
+```
+
+Your backend can also force-destroy a session server-side (e.g., when a user's subscription ends):
+
+```bash
+curl -X DELETE https://mcp.dragble.io/sessions/user-42-doc-99 \
+  -H "X-API-Key: db_mcp_your_key_here"
+```
+
+Idle sessions are reaped after 2 hours of inactivity. Active sessions never expire — each tool call resets the timer.
+
+### MCP method reference
+
+| Method                                             | Returns                                                                 |
+| -------------------------------------------------- | ----------------------------------------------------------------------- |
+| `editor.connectMCP({ id, storage?, editorMode? })` | `{ sessionId, storageMode?, resumed? }`                                 |
+| `editor.disconnectMCP()`                           | `{ destroyed }` — permanently deletes session                           |
+| `editor.getPairingCode()`                          | `{ code, expiresAt }` — generate a pairing code for end-user AI clients |
+| `editor.endPairing()`                              | `{ revoked }` — invalidate the active pairing code                      |
+| `editor.getMCPStatus()`                            | `{ paired: true, sessionId } \| { paired: false, reason? }`             |
+| `editor.onAIToolFired(cb)`                         | unsubscribe fn — fires when AI calls any tool                           |
+
+### Full documentation
+
+- [MCP Overview](https://docs.dragble.com/mcp-server/overview)
+- [Credentials & Security](https://docs.dragble.com/mcp-server/credentials)
+- [AI Client Setup (OpenCode, Claude Code, Codex, etc.)](https://docs.dragble.com/mcp-server/ai-client-setup)
 
 ## Props
 
