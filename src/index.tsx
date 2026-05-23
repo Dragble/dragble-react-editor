@@ -164,7 +164,7 @@ export interface DragbleEditorProps {
    */
   contentType?: "module";
   /**
-   * All editor configuration (appearance, tools, features, AI, storage, etc.).
+    * All editor configuration (appearance, tools, features, AI, etc.).
    * These are placed under `options` in the SDK's DragbleConfig.
    */
   options?: EditorOptions;
