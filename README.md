@@ -345,7 +345,7 @@ const { destroyed } = await editor.disconnectMCP();
 Your backend can also force-destroy a session server-side (e.g., when a user's subscription ends):
 
 ```bash
-curl -X DELETE https://mcp.dragble.io/sessions/user-42-doc-99 \
+curl -X DELETE https://mcp.dragble.com/sessions/user-42-doc-99 \
   -H "X-API-Key: db_mcp_your_key_here"
 ```
 
