@@ -82,7 +82,9 @@
     "sdk",
     "mcp",
     "content-builder",
-    "email-automation"
+    "email-automation",
+    "ai-email-builder",
+    "mcp-email-builder"
   ],
   "author": "Dragble",
   "license": "MIT",
@@ -98,7 +100,7 @@
   },
   "homepage": "https://docs.dragble.com",
   "dependencies": {
-    "dragble-types": "^1.0.7"
+    "dragble-types": "^1.0.9"
   },
   "peerDependencies": {
     "react": ">=17.0.0",

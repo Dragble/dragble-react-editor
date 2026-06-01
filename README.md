@@ -206,21 +206,20 @@ export default AdvancedEmailBuilder;
 
 ## MCP — AI Integration
 
-Connect AI agents (Claude Code, OpenCode, Codex, Cursor, or your own backend) to the editor through the Model Context Protocol. The AI calls structured tools — `add_row`, `add_heading`, `update_button`, `export_html` — that mutate design state live on the canvas.
+Connect AI agents (Claude Code, OpenCode, Codex, Cursor, or your own backend) to the editor through the Model Context Protocol. Your backend uses `mcp_key`; third-party AI clients use `mcp_client_key` plus a pairing code. Tool calls mutate design state live on the canvas.
 
 ### Enabling MCP
 
-MCP is off by default. Set `features: { mcp: true }` to opt in:
+MCP is on by default when your plan includes it. You can still set `features: { mcp: true }` explicitly, or set `features: { mcp: false }` to turn it off for an embed:
 
 ```tsx
 <DragbleEditor
   ref={editorRef}
   editorKey="db_pxl81cxn92wignwx"
-  options={{ features: { mcp: true } }}
 />
 ```
 
-MCP also requires a **Starter plan or higher**. Both conditions must be true — plan allows it AND SDK enables it.
+MCP also requires a **Starter plan or higher**. Both conditions must be true — plan allows it AND SDK has not opted out.
 
 ### Quick example — your backend controls the AI
 
@@ -243,8 +242,8 @@ function App() {
     const userIdFromAuth = "alice123"; // from your auth/session
     const docIdFromRoute = "campaign-summer"; // from your URL or DB row
     const id = `${userIdFromAuth}-${docIdFromRoute}`;
-    const { sessionId } = await editorRef.current!.editor!.connectMCP({ id });
-    // Pass sessionId to your backend — it calls MCP tools with your mcp_key
+    const { sessionId } = await editorRef.current!.editor!.joinMCP({ id });
+    // Pass sessionId to your backend — it calls MCP tools with your backend mcp_key
   };
 
   return (
@@ -253,7 +252,6 @@ function App() {
       <DragbleEditor
         ref={editorRef}
         editorKey="db_pxl81cxn92wignwx"
-        options={{ features: { mcp: true } }}
       />
     </div>
   );
@@ -268,10 +266,7 @@ const handleLetUserPair = async () => {
   // Same id you'd use anywhere else for this user+document combination.
   // 8-128 chars, only letters/digits/hyphens/underscores.
   const id = "alice123-campaign-summer-2026";
-  await editor.connectMCP({ id });
-
-  // Explicitly generate a pairing code (not auto-generated)
-  const { code, expiresAt } = await editor.getPairingCode();
+  const { code, expiresAt } = await editor.startMCPPairing({ id });
   alert(`Paste this into Claude Code: ${code}`);
 };
 ```
@@ -287,15 +282,15 @@ This prevents two AI controllers from conflicting on the same design.
 
 ### How it works
 
-1. **Enable MCP** in the SDK config: `features: { mcp: true }`.
-2. **Generate an MCP key** in the Dragble dashboard: Project → MCP Key → Generate. Store it in your backend env vars — never in browser code.
-3. **Call `editor.connectMCP({ id })`** where `id` is a stable identifier you control (see below).
-4. **Choose your AI path**: either your backend calls MCP tools directly (using the mcp_key), or you generate a pairing code for the end-user to connect their own AI client.
+1. **Confirm MCP is enabled**: it is on by default; set `features: { mcp: false }` only when you want to opt out.
+2. **Generate MCP keys** in the Dragble dashboard: use backend `mcp_key` for your server, and `mcp_client_key` for Claude/OpenCode/Cursor/Codex-style clients.
+3. **Call `editor.joinMCP({ id })`** where `id` is a stable identifier you control (see below).
+4. **Choose your AI path**: either your backend calls MCP tools directly (using `mcp_key`), or you generate a pairing code for the end-user to connect their own AI client (using `mcp_client_key`).
 5. **Mutations stream live** onto the editor canvas as the AI works.
 
 ### The `id` parameter — why it matters
 
-The `id` you pass to `connectMCP()` is a **Bring Your Own ID (BYOI)** that maps to your domain entities. It is NOT a random token — it is how Dragble identifies the session across browser refreshes, server restarts, and device switches.
+The `id` you pass to `joinMCP()` is a **Bring Your Own ID (BYOI)** that maps to your domain entities. It is NOT a random token — it is how Dragble identifies the session across browser refreshes, server restarts, and device switches.
 
 **Rules:**
 
@@ -311,14 +306,14 @@ The `id` you pass to `connectMCP()` is a **Bring Your Own ID (BYOI)** that maps 
 
 ```tsx
 // Recommended: derive from your domain — concrete examples
-editor.connectMCP({ id: "alice123-campaign-summer-2026" }); // user + doc
-editor.connectMCP({ id: "workspace_acme_template_welcome" }); // workspace + template
-editor.connectMCP({ id: "org-uber-eats-promo-q4-2026" }); // org + campaign
-editor.connectMCP({ id: "tenant_42_invoice_template_v3" }); // tenant + entity
+editor.joinMCP({ id: "alice123-campaign-summer-2026" }); // user + doc
+editor.joinMCP({ id: "workspace_acme_template_welcome" }); // workspace + template
+editor.joinMCP({ id: "org-uber-eats-promo-q4-2026" }); // org + campaign
+editor.joinMCP({ id: "tenant_42_invoice_template_v3" }); // tenant + entity
 
 // Valid but NOT recommended — random IDs break session continuity
 // (every page refresh creates a brand new session, AI loses context)
-editor.connectMCP({ id: crypto.randomUUID() });
+editor.joinMCP({ id: crypto.randomUUID() });
 ```
 
 ### Disconnecting
@@ -342,7 +337,8 @@ Idle sessions are reaped after 2 hours of inactivity. Active sessions never expi
 
 | Method                                             | Returns                                                                 |
 | -------------------------------------------------- | ----------------------------------------------------------------------- |
-| `editor.connectMCP({ id, editorMode? })`           | `{ sessionId, resumed? }`                                               |
+| `editor.joinMCP({ id, editorMode? })`              | `{ sessionId, resumed? }` for backend-managed flows                     |
+| `editor.startMCPPairing({ id, editorMode? })`      | `{ sessionId, resumed?, code, expiresAt }` for client pairing           |
 | `editor.disconnectMCP()`                           | `{ destroyed }` — permanently deletes session                           |
 | `editor.getPairingCode()`                          | `{ code, expiresAt }` — generate a pairing code for end-user AI clients |
 | `editor.endPairing()`                              | `{ revoked }` — invalidate the active pairing code                      |
